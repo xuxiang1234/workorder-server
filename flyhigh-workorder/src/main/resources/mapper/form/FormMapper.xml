@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.form.mapper.FormMapper">
+
+    <resultMap type="com.flyhigh.form.domain.entity.Form" id="FormResult">
+        <result property="id" column="id"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="system" column="system"/>
+        <result property="isMultForm" column="is_mult_form"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectFormVo">
+        select id, contact_id, `system`, is_mult_form, content, create_time, update_time from form
+    </sql>
+
+    <select id="selectForm" resultMap="FormResult">
+        <include refid="selectFormVo"/>
+        WHERE contact_id = #{contactId}
+        AND `system` = #{system}
+    </select>
+
+    <insert id="insertForm" parameterType="com.flyhigh.form.domain.entity.Form" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into form
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contactId != null">contact_id,</if>
+            <if test="system != null and system != ''">system,</if>
+            <if test="isMultForm != null">is_mult_form,</if>
+            <if test="content != null and content != ''">content,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contactId != null">#{contactId},</if>
+            <if test="system != null and system != ''">#{system},</if>
+            <if test="isMultForm != null">#{isMultForm},</if>
+            <if test="content != null and content != ''">#{content},</if>
+        </trim>
+    </insert>
+
+    <update id="updateForm" parameterType="com.flyhigh.form.domain.entity.Form">
+        update form
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contactId != null">contact_id = #{contactId},</if>
+            <if test="system != null and system != ''">system = #{system},</if>
+            <if test="isMultForm != null">is_mult_form = #{isMultForm},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

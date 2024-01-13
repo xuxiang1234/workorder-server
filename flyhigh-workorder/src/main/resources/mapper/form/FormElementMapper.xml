@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.form.mapper.FormElementMapper">
+
+    <resultMap type="com.flyhigh.form.domain.entity.FormElement" id="FormElementResult">
+        <result property="id" column="id"/>
+        <result property="formId" column="form_id"/>
+        <result property="code" column="code"/>
+        <result property="label" column="label"/>
+        <result property="type" column="type"/>
+        <result property="bizName" column="biz_name"/>
+        <result property="bizField" column="biz_field"/>
+        <result property="bizKey" column="biz_key"/>
+        <result property="formIndex" column="form_index"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.flyhigh.api.vo.element.FormElementVO" id="formElementVO">
+        <result property="formId" column="form_id"/>
+        <result property="code" column="code"/>
+        <result property="label" column="label"/>
+        <result property="type" column="type"/>
+        <result property="bizName" column="biz_name"/>
+        <result property="bizField" column="biz_field"/>
+        <result property="bizKey" column="biz_key"/>
+        <result property="formIndex" column="form_index"/>
+        <result property="createTime" column="create_time"/>
+        <collection property="values" ofType="java.lang.String" javaType="java.util.List">
+            <result column="value"/>
+        </collection>
+    </resultMap>
+
+
+    <sql id="selectFormElementVo">
+        select id, form_id, code, label, `type`, biz_name, biz_field, biz_key, form_index, create_time, update_time from form_element
+    </sql>
+
+    <select id="selectFormElementList" parameterType="com.flyhigh.form.domain.entity.FormElement"
+            resultMap="FormElementResult">
+        <include refid="selectFormElementVo"/>
+        <where>
+            <if test="formId != null ">and form_id = #{formId}</if>
+            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="label != null  and label != ''">and label = #{label}</if>
+            <if test="type != null  and type != ''">and type = #{type}</if>
+            <if test="bizName != null  and bizName != ''">and biz_name = #{bizName}</if>
+            <if test="bizField != null  and bizField != ''">and biz_field = #{bizField}</if>
+            <if test="bizKey != null  and bizKey != ''">and biz_key = #{bizKey}</if>
+            <if test="formIndex != null">and form_index = #{formIndex}</if>
+        </where>
+    </select>
+
+    <select id="selectFormElementById" parameterType="java.lang.Long" resultMap="FormElementResult">
+        <include refid="selectFormElementVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectFormElement" resultMap="formElementVO"
+            parameterType="java.lang.Long">
+        select e.form_id, e.code, e.label, e.type, e.biz_name, e.biz_field, e.biz_key, e.form_index, e.create_time, v.value
+        from form_element e
+        left join form_element_value v on v.form_element_id = e.id
+        where e.form_id = #{formId}
+
+    </select>
+    <select id="selectFormExist" resultType="java.lang.Long">
+        SELECT contact_id
+        from form
+        where contact_id in
+        <foreach item="contactId" collection="contactIds" open="(" separator="," close=")">
+            #{contactId}
+        </foreach>
+        and `system` = #{system}
+    </select>
+    <select id="selectStatisticsForm" resultMap="formElementVO">
+        SELECT e.form_id, e.code, e.label, e.type, e.biz_name, e.biz_field, e.biz_key, e.form_index, e.create_time,
+        v.value
+        from form f
+        inner join form_element e on e.form_id = f.id
+        left join form_element_value v on v.form_element_id = e.id
+        where f.contact_id in
+        <foreach item="contactId" collection="contactIds" open="(" separator="," close=")">
+            #{contactId}
+        </foreach>
+
+        and e.biz_name = #{formBizName}
+    </select>
+
+
+    <insert id="insertFormElement" parameterType="com.flyhigh.form.domain.entity.FormElement" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into form_element
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="formId != null">form_id,</if>
+            <if test="code != null and code != ''">code,</if>
+            <if test="label != null and label != ''">label,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="bizName != null and bizName != ''">biz_name,</if>
+            <if test="bizField != null and bizField != ''">biz_field,</if>
+            <if test="bizKey != null and bizKey != ''">biz_key,</if>
+            <if test="formIndex != null">form_index,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="formId != null">#{formId},</if>
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="label != null and label != ''">#{label},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="bizName != null and bizName != ''">#{bizName},</if>
+            <if test="bizField != null and bizField != ''">#{bizField},</if>
+            <if test="bizKey != null and bizKey != ''">#{bizKey},</if>
+            <if test="formIndex != null">#{formIndex},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFormElement" parameterType="com.flyhigh.form.domain.entity.FormElement">
+        update form_element
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="formId != null">form_id = #{formId},</if>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="label != null and label != ''">label = #{label},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="bizName != null and bizName != ''">biz_name = #{bizName},</if>
+            <if test="bizField != null and bizField != ''">biz_field = #{bizField},</if>
+            <if test="bizKey != null and bizKey != ''">biz_key = #{bizKey},</if>
+            <if test="formIndex != null">form_index = #{formIndex},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFormElementById" parameterType="java.lang.Long">
+        delete from form_element where id = #{id}
+    </delete>
+
+    <delete id="deleteFormElementByIds" parameterType="java.lang.Long">
+        delete from form_element where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

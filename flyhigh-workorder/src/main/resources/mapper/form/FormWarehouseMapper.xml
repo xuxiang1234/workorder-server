@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.form.mapper.FormWarehouseMapper">
+
+    <resultMap type="com.flyhigh.form.domain.entity.FormWarehouse" id="FormWarehouseResult">
+        <result property="id" column="id"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="system" column="system"/>
+        <result property="category" column="category"/>
+        <result property="name" column="name"/>
+        <result property="isMultForm" column="is_mult_form"/>
+        <result property="content" column="content"/>
+        <result property="createId" column="create_id"/>
+        <result property="createName" column="create_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectFormWarehouseVo">
+        select id, contact_id, `system`, category, `name`, is_mult_form, content, create_id, create_name, create_time, update_time, remark from form_warehouse
+    </sql>
+
+    <select id="selectForm" resultMap="FormWarehouseResult">
+        <include refid="selectFormWarehouseVo"/>
+        where id = #{id}
+        and `system` = #{system}
+    </select>
+
+    <select id="selectFormWarehouseById" parameterType="java.lang.Long" resultMap="FormWarehouseResult">
+        <include refid="selectFormWarehouseVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 不查content 因为太大 -->
+    <select id="selectFormWarehousePage" resultType="com.flyhigh.form.domain.entity.FormWarehouse">
+        select id, contact_id, `system`, category, `name`, is_mult_form, create_id, create_name, create_time,
+        update_time, remark
+        from form_warehouse
+        <where>
+            <if test="pageReq.contactId != null">
+                AND contact_id = #{pageReq.contactId}
+            </if>
+            <if test="pageReq.system != null and pageReq.system != ''">
+                AND `system` = #{pageReq.system}
+            </if>
+            <if test="pageReq.category != null and pageReq.category != ''">
+                AND `category` = #{pageReq.category}
+            </if>
+            <if test="pageReq.name != null  and pageReq.name != ''">and name like concat('%', #{pageReq.name}, '%')</if>
+            <if test="pageReq.createName != null  and pageReq.createName != ''">and create_name like concat('%',
+                #{pageReq.createName}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insertFormWarehouse" parameterType="com.flyhigh.form.domain.entity.FormWarehouse"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into form_warehouse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="isMultForm != null">is_mult_form,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createName != null and createName != ''">create_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="isMultForm != null">#{isMultForm},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createName != null and createName != ''">#{createName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFormWarehouse" parameterType="com.flyhigh.form.domain.entity.FormWarehouse">
+        update form_warehouse
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="isMultForm != null">is_mult_form = #{isMultForm},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createName != null and createName != ''">create_name = #{createName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

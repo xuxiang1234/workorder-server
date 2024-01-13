@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.sms.mapper.BizMessageUserDetailMapper">
+
+    <resultMap type="BizMessageUserDetail" id="BizMessageUserDetailResult">
+        <result property="id" column="id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="businessId" column="business_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="messageType" column="message_type"/>
+        <result property="receiveStatus" column="receive_status"/>
+        <result property="whetherApprove" column="whether_approve"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectBizMessageUserDetailVo">
+        select id, message_id, business_id, user_id, message_type, receive_status, whether_approve, del_flag, create_by, create_time, update_by, update_time from biz_message_user_detail
+    </sql>
+
+    <select id="selectBizMessageUserDetailList" parameterType="BizMessageUserDetail"
+            resultMap="BizMessageUserDetailResult">
+        <include refid="selectBizMessageUserDetailVo"/>
+        <where>
+            <if test="messageId != null ">and message_id = #{messageId}</if>
+            <if test="businessId != null ">and business_id = #{businessId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="messageType != null  and messageType != ''">and message_type = #{messageType}</if>
+            <if test="receiveStatus != null ">and receive_status = #{receiveStatus}</if>
+            <if test="whetherApprove != null ">and whether_approve = #{whetherApprove}</if>
+        </where>
+    </select>
+
+    <select id="selectBizMessageUserDetailById" parameterType="Long" resultMap="BizMessageUserDetailResult">
+        <include refid="selectBizMessageUserDetailVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizMessageUserDetail" parameterType="BizMessageUserDetail" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into biz_message_user_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">message_id,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="messageType != null">message_type,</if>
+            <if test="receiveStatus != null">receive_status,</if>
+            <if test="whetherApprove != null">whether_approve,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">#{messageId},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="messageType != null">#{messageType},</if>
+            <if test="receiveStatus != null">#{receiveStatus},</if>
+            <if test="whetherApprove != null">#{whetherApprove},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizMessageUserDetail" parameterType="BizMessageUserDetail">
+        update biz_message_user_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageId != null">message_id = #{messageId},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="receiveStatus != null">receive_status = #{receiveStatus},</if>
+            <if test="whetherApprove != null">whether_approve = #{whetherApprove},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizMessageUserDetailById" parameterType="Long">
+        delete from biz_message_user_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteBizMessageUserDetailByIds" parameterType="String">
+        delete from biz_message_user_detail where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

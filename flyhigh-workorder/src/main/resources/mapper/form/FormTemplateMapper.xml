@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.form.mapper.FormTemplateMapper">
+
+    <resultMap type="com.flyhigh.form.domain.entity.FormTemplate" id="FormtemplateResult">
+        <result property="id" column="id"/>
+        <result property="contactId" column="contact_id"/>
+        <result property="system" column="system"/>
+        <result property="isMultForm" column="is_mult_form"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectFormtemplateVo">
+        select id, contact_id, `system`, is_mult_form, content, create_time, update_time from form_template
+    </sql>
+
+    <select id="selectFormtemplateList" parameterType="com.flyhigh.form.domain.entity.FormTemplate"
+            resultMap="FormtemplateResult">
+        <include refid="selectFormtemplateVo"/>
+        <where>
+            <if test="contactId != null ">and contact_id = #{contactId}</if>
+            <if test="system != null  and system != ''">and `system` = #{system}</if>
+            <if test="content != null  and content != ''">and content = #{content}</if>
+        </where>
+    </select>
+
+    <select id="selectFormtemplateById" parameterType="java.lang.Long" resultMap="FormtemplateResult">
+        <include refid="selectFormtemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectForm" resultMap="FormtemplateResult">
+        <include refid="selectFormtemplateVo"/>
+        WHERE contact_id = #{contactId} and `system` = #{system}
+        order by id asc
+    </select>
+
+    <select id="selectFormBycontactIdList" resultMap="FormtemplateResult">
+        <include refid="selectFormtemplateVo"/>
+        where contact_id in
+        <foreach item="contactId" collection="contactIdList" open="(" separator="," close=")">
+            #{contactId}
+        </foreach>
+        and `system` = #{system}
+        order by id asc
+    </select>
+
+    <insert id="insertFormtemplate" parameterType="com.flyhigh.form.domain.entity.FormTemplate" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into form_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contactId != null">contact_id,</if>
+            <if test="system != null and system != ''">system,</if>
+            <if test="isMultForm != null">is_mult_form,</if>
+            <if test="content != null and content != ''">content,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contactId != null">#{contactId},</if>
+            <if test="system != null and system != ''">#{system},</if>
+            <if test="isMultForm != null">#{isMultForm},</if>
+            <if test="content != null and content != ''">#{content},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFormtemplate" parameterType="com.flyhigh.form.domain.entity.FormTemplate">
+        update form_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contactId != null">contact_id = #{contactId},</if>
+            <if test="system != null and system != ''">`system` = #{system},</if>
+            <if test="isMultForm != null">is_mult_form = #{isMultForm},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFormtemplateById" parameterType="java.lang.Long">
+        delete from form_template where id = #{id}
+    </delete>
+
+    <delete id="deleteFormtemplateByIds" parameterType="java.lang.Long">
+        delete from form_template where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteByContactIdAndSystem">
+        delete from form_template
+        where contact_id = #{contactId}
+        and `system` = #{system}
+    </delete>
+</mapper>

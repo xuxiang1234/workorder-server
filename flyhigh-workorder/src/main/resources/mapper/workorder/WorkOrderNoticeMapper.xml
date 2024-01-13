@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.workorder.mapper.WorkOrderNoticeMapper">
+
+    <resultMap type="com.flyhigh.workorder.domain.entity.WorkOrderNotice" id="WorkOrderNoticeResult">
+        <result property="id" column="id"/>
+        <result property="workOrderId" column="work_order_id"/>
+        <result property="workOrderName" column="work_order_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="isRead" column="is_read"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectWorkOrderNoticeVo">
+        select id, work_order_id, work_order_name, user_id, is_read, create_time, update_time from work_order_notice
+    </sql>
+
+    <select id="selectWorkOrderNoticeList" parameterType="com.flyhigh.workorder.domain.entity.WorkOrderNotice"
+            resultMap="WorkOrderNoticeResult">
+        <include refid="selectWorkOrderNoticeVo"/>
+        <where>
+            <if test="workOrderId != null ">and work_order_id = #{workOrderId}</if>
+            <if test="workOrderName != null  and workOrderName != ''">and work_order_name like concat('%',
+                #{workOrderName}, '%')
+            </if>
+            <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
+            <if test="isRead != null ">and is_read = #{isRead}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkOrderNoticeById" parameterType="java.lang.Long" resultMap="WorkOrderNoticeResult">
+        <include refid="selectWorkOrderNoticeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWorkOrderNotice" parameterType="com.flyhigh.workorder.domain.entity.WorkOrderNotice"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into work_order_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workOrderId != null">work_order_id,</if>
+            <if test="workOrderName != null and workOrderName != ''">work_order_name,</if>
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="isRead != null">is_read,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workOrderId != null">#{workOrderId},</if>
+            <if test="workOrderName != null and workOrderName != ''">#{workOrderName},</if>
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="isRead != null">#{isRead},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWorkOrderNotice" parameterType="com.flyhigh.workorder.domain.entity.WorkOrderNotice">
+        update work_order_notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workOrderId != null">work_order_id = #{workOrderId},</if>
+            <if test="workOrderName != null and workOrderName != ''">work_order_name = #{workOrderName},</if>
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="isRead != null">is_read = #{isRead},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWorkOrderNoticeById" parameterType="java.lang.Long">
+        delete from work_order_notice where id = #{id}
+    </delete>
+
+    <delete id="deleteWorkOrderNoticeByIds" parameterType="java.lang.Long">
+        delete from work_order_notice where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectList" parameterType="com.flyhigh.workorder.domain.vo.workordernotice.WorkOrderNoticePageReq"
+            resultMap="WorkOrderNoticeResult">
+        SELECT
+            notice.id,
+            notice.work_order_id,
+            notice.work_order_name,
+            notice.user_id,
+            notice.is_read,
+            notice.create_time,
+            notice.update_time,
+            work_order.work_order_type AS workOrderType
+        FROM
+            work_order_notice notice
+            LEFT JOIN work_order ON work_order.id = notice.work_order_id
+        <where>
+            <if test="workOrderId != null">
+                AND notice.work_order_id = #{workOrderId}
+            </if>
+            <if test="workOrderName != null and workOrderName != ''">
+                AND notice.work_order_name LIKE CONCAT('%', #{workOrderName}, '%')
+            </if>
+            <if test="userId != null">
+                AND notice.user_id = #{userId}
+            </if>
+            <if test="isRead != null">
+                AND notice.is_read = #{isRead}
+            </if>
+        </where>
+        ORDER BY notice.id DESC
+    </select>
+</mapper>

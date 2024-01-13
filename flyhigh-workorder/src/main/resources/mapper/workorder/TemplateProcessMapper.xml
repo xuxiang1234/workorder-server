@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.workorder.mapper.TemplateProcessMapper">
+
+    <resultMap type="com.flyhigh.workorder.domain.entity.TemplateProcess" id="templateProcessResult">
+        <result property="id" column="id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="processType" column="process_type"/>
+        <result property="processIndex" column="process_index"/>
+        <result property="groupId" column="group_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="aliasName" column="alias_name"/>
+        <result property="isLast" column="is_last"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectTemplateProcessVo">
+        select id, template_id, process_type, process_index, group_id, user_id, user_name, alias_name, is_last, create_time, update_time from template_process
+    </sql>
+
+    <select id="selectTemplateProcessList" parameterType="com.flyhigh.workorder.domain.entity.TemplateProcess"
+            resultMap="templateProcessResult">
+        <include refid="selectTemplateProcessVo"/>
+        <where>
+            <if test="templateId != null ">and template_id = #{templateId}</if>
+            <if test="processType != null  and processType != ''">and process_type = #{processType}</if>
+            <if test="processIndex != null ">and process_index = #{processIndex}</if>
+            <if test="groupId != null ">and group_id = #{groupId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''">and user_name like concat('%', #{userName}, '%')</if>
+            <if test="aliasName != null  and aliasName != ''">and alias_name like concat('%', #{aliasName}, '%')</if>
+            <if test="isLast != null ">and is_last = #{isLast}</if>
+        </where>
+        order by process_index asc
+    </select>
+
+    <select id="selectTemplateProcessById" parameterType="java.lang.Long" resultMap="templateProcessResult">
+        <include refid="selectTemplateProcessVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTemplateProcess" parameterType="com.flyhigh.workorder.domain.entity.TemplateProcess">
+        insert into template_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="templateId != null">template_id,</if>
+            <if test="processType != null and processType != ''">process_type,</if>
+            <if test="processIndex != null">process_index,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="aliasName != null and aliasName != ''">alias_name,</if>
+            <if test="isLast != null">is_last,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="templateId != null">#{templateId},</if>
+            <if test="processType != null and processType != ''">#{processType},</if>
+            <if test="processIndex != null">#{processIndex},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="aliasName != null and aliasName != ''">#{aliasName},</if>
+            <if test="isLast != null">#{isLast},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTemplateProcess" parameterType="com.flyhigh.workorder.domain.entity.TemplateProcess">
+        update template_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="processType != null and processType != ''">process_type = #{processType},</if>
+            <if test="processIndex != null">process_index = #{processIndex},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="aliasName != null and aliasName != ''">alias_name = #{aliasName},</if>
+            <if test="isLast != null">is_last = #{isLast},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletetemplateProcessById" parameterType="java.lang.Long">
+        delete from template_process where id = #{id}
+    </delete>
+
+    <delete id="deletetemplateProcessByIds" parameterType="java.lang.Long">
+        delete from template_process where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTemplatetemplateId" parameterType="java.lang.Long">
+        delete from template_process where template_id = #{templateId}
+    </delete>
+</mapper>

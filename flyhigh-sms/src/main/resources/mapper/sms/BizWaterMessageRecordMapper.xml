@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.sms.mapper.BizWaterMessageRecordMapper">
+
+    <resultMap type="com.flyhigh.sms.domain.BizWaterMessageRecord" id="BizWaterMessageRecordResult">
+        <result property="id" column="id"/>
+        <result property="moduleTypeDesc" column="module_type_desc"/>
+        <result property="moduleType" column="module_type"/>
+        <result property="businessId" column="business_id"/>
+        <result property="messageType" column="message_type"/>
+        <result property="messageDesc" column="message_desc"/>
+        <result property="customParameters" column="custom_parameters"/>
+        <result property="content" column="content"/>
+        <result property="messageSender" column="message_sender"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectBizWaterMessageRecordVo">
+        select id, module_type_desc, module_type, business_id, message_type, message_desc, custom_parameters, content, message_sender, create_user_id, dept_id, dept_name, create_by, create_time, update_by, update_time, remark, del_flag from biz_water_message_record
+    </sql>
+
+    <select id="selectBizWaterMessageRecordList" parameterType="com.flyhigh.sms.domain.BizWaterMessageRecord"
+            resultMap="BizWaterMessageRecordResult">
+        <include refid="selectBizWaterMessageRecordVo"/>
+        <where>
+            <if test="moduleTypeDesc != null  and moduleTypeDesc != ''">and module_type_desc = #{moduleTypeDesc}</if>
+            <if test="moduleType != null ">and module_type = #{moduleType}</if>
+            <if test="businessId != null ">and business_id = #{businessId}</if>
+            <if test="messageType != null ">and message_type = #{messageType}</if>
+            <if test="messageDesc != null  and messageDesc != ''">and message_desc = #{messageDesc}</if>
+            <if test="customParameters != null  and customParameters != ''">and custom_parameters =
+                #{customParameters}
+            </if>
+            <if test="content != null  and content != ''">and content = #{content}</if>
+            <if test="messageSender != null  and messageSender != ''">and message_sender = #{messageSender}</if>
+            <if test="createUserId != null ">and create_user_id = #{createUserId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''">and dept_name like concat('%', #{deptName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectBizWaterMessageRecordById" parameterType="Long" resultMap="BizWaterMessageRecordResult">
+        <include refid="selectBizWaterMessageRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizWaterMessageRecord" parameterType="com.flyhigh.sms.domain.BizWaterMessageRecord"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into biz_water_message_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleTypeDesc != null and moduleTypeDesc != ''">module_type_desc,</if>
+            <if test="moduleType != null">module_type,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="messageType != null">message_type,</if>
+            <if test="messageDesc != null">message_desc,</if>
+            <if test="customParameters != null">custom_parameters,</if>
+            <if test="content != null">content,</if>
+            <if test="messageSender != null and messageSender != ''">message_sender,</if>
+            <if test="createUserId != null">create_user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null and deptName != ''">dept_name,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleTypeDesc != null and moduleTypeDesc != ''">#{moduleTypeDesc},</if>
+            <if test="moduleType != null">#{moduleType},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="messageType != null">#{messageType},</if>
+            <if test="messageDesc != null">#{messageDesc},</if>
+            <if test="customParameters != null">#{customParameters},</if>
+            <if test="content != null">#{content},</if>
+            <if test="messageSender != null and messageSender != ''">#{messageSender},</if>
+            <if test="createUserId != null">#{createUserId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null and deptName != ''">#{deptName},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizWaterMessageRecord" parameterType="com.flyhigh.sms.domain.BizWaterMessageRecord">
+        update biz_water_message_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleTypeDesc != null and moduleTypeDesc != ''">module_type_desc = #{moduleTypeDesc},</if>
+            <if test="moduleType != null">module_type = #{moduleType},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="messageDesc != null">message_desc = #{messageDesc},</if>
+            <if test="customParameters != null">custom_parameters = #{customParameters},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="messageSender != null and messageSender != ''">message_sender = #{messageSender},</if>
+            <if test="createUserId != null">create_user_id = #{createUserId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizWaterMessageRecordById" parameterType="Long">
+        delete from biz_water_message_record where id = #{id}
+    </delete>
+
+    <delete id="deleteBizWaterMessageRecordByIds" parameterType="String">
+        delete from biz_water_message_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

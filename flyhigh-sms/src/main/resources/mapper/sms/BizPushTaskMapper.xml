@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.sms.mapper.BizPushTaskMapper">
+
+    <resultMap type="BizPushTask" id="BizPushTaskResult">
+        <result property="id" column="id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="gtCode" column="gt_code"/>
+        <result property="userNumber" column="user_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectBizPushTaskVo">
+        select id, message_id, task_id, gt_code, user_number, create_time, update_time, remark, del_flag from biz_push_task
+    </sql>
+
+    <select id="selectBizPushTaskList" parameterType="BizPushTask" resultMap="BizPushTaskResult">
+        <include refid="selectBizPushTaskVo"/>
+        <where>
+            <if test="messageId != null ">and message_id = #{messageId}</if>
+            <if test="taskId != null  and taskId != ''">and task_id = #{taskId}</if>
+            <if test="gtCode != null  and gtCode != ''">and gt_code = #{gtCode}</if>
+            <if test="userNumber != null ">and user_number = #{userNumber}</if>
+        </where>
+    </select>
+
+    <select id="selectBizPushTaskById" parameterType="Long" resultMap="BizPushTaskResult">
+        <include refid="selectBizPushTaskVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizPushTask" parameterType="BizPushTask" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_push_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">message_id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="gtCode != null">gt_code,</if>
+            <if test="userNumber != null">user_number,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">#{messageId},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="gtCode != null">#{gtCode},</if>
+            <if test="userNumber != null">#{userNumber},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizPushTask" parameterType="BizPushTask">
+        update biz_push_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageId != null">message_id = #{messageId},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="gtCode != null">gt_code = #{gtCode},</if>
+            <if test="userNumber != null">user_number = #{userNumber},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizPushTaskById" parameterType="Long">
+        delete from biz_push_task where id = #{id}
+    </delete>
+
+    <delete id="deleteBizPushTaskByIds" parameterType="String">
+        delete from biz_push_task where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

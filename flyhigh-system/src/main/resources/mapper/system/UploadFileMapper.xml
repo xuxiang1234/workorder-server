@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.system.mapper.UploadFileMapper">
+
+    <resultMap type="UploadFile" id="UploadFileResult">
+        <result property="id" column="id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="originalName" column="original_name"/>
+        <result property="fileType" column="file_type"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="fileSuffix" column="file_suffix"/>
+        <result property="url" column="url"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+    </resultMap>
+
+    <sql id="selectUploadFileVo">
+        select id, file_name, original_name, file_type, relation_id, file_suffix, url, create_time, create_by, update_time, update_by from upload_file
+    </sql>
+
+    <select id="selectUploadFileList" parameterType="UploadFile" resultMap="UploadFileResult">
+        <include refid="selectUploadFileVo"/>
+        <where>
+            <if test="fileName != null  and fileName != ''">and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="originalName != null  and originalName != ''">and original_name like concat('%', #{originalName},
+                '%')
+            </if>
+            <if test="fileType != null  and fileType != ''">and file_type = #{fileType}</if>
+            <if test="relationId != null ">and relation_id = #{relationId}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''">and file_suffix = #{fileSuffix}</if>
+        </where>
+    </select>
+
+    <select id="selectUploadFileById" parameterType="Long" resultMap="UploadFileResult">
+        <include refid="selectUploadFileVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertUploadFile" parameterType="UploadFile" useGeneratedKeys="true" keyProperty="id">
+        insert into upload_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="originalName != null and originalName != ''">original_name,</if>
+            <if test="fileType != null">file_type,</if>
+            <if test="relationId != null">relation_id,</if>
+            <if test="fileSuffix != null and fileSuffix != ''">file_suffix,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="originalName != null and originalName != ''">#{originalName},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="relationId != null">#{relationId},</if>
+            <if test="fileSuffix != null and fileSuffix != ''">#{fileSuffix},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+        </trim>
+    </insert>
+
+    <update id="updateUploadFile" parameterType="UploadFile">
+        update upload_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="originalName != null and originalName != ''">original_name = #{originalName},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="relationId != null">relation_id = #{relationId},</if>
+            <if test="fileSuffix != null and fileSuffix != ''">file_suffix = #{fileSuffix},</if>
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUploadFileById" parameterType="Long">
+        delete from upload_file where id = #{id}
+    </delete>
+
+    <delete id="deleteUploadFileByIds" parameterType="String">
+        delete from upload_file where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

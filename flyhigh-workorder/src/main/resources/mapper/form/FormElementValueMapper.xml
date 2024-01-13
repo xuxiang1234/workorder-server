@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.form.mapper.FormElementValueMapper">
+
+    <resultMap type="com.flyhigh.form.domain.entity.FormElementValue" id="FormElementValueResult">
+        <result property="id" column="id"/>
+        <result property="formElementId" column="form_element_id"/>
+        <result property="valueIndex" column="value_index"/>
+        <result property="value" column="value"/>
+        <result property="isNumber" column="is_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectFormElementValueVo">
+        select id, form_element_id, index, value, is_number, create_time, update_time from form_element_value
+    </sql>
+
+    <select id="selectFormElementValueList" parameterType="com.flyhigh.form.domain.entity.FormElementValue"
+            resultMap="FormElementValueResult">
+        <include refid="selectFormElementValueVo"/>
+        <where>
+            <if test="formElementId != null ">and form_element_id = #{formElementId}</if>
+            <if test="valueIndex != null ">and value_index = #{valueIndex}</if>
+            <if test="value != null  and value != ''">and value = #{value}</if>
+            <if test="isNumber != null ">and is_number = #{isNumber}</if>
+        </where>
+    </select>
+
+    <select id="selectFormElementValueById" parameterType="java.lang.Long" resultMap="FormElementValueResult">
+        <include refid="selectFormElementValueVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFormElementValue" parameterType="com.flyhigh.form.domain.entity.FormElementValue"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into form_element_value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="formElementId != null">form_element_id,</if>
+            <if test="valueIndex != null">value_index,</if>
+            <if test="value != null and value != ''">value,</if>
+            <if test="isNumber != null">is_number,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="formElementId != null">#{formElementId},</if>
+            <if test="valueIndex != null">#{valueIndex},</if>
+            <if test="value != null and value != ''">#{value},</if>
+            <if test="isNumber != null">#{isNumber},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFormElementValue" parameterType="com.flyhigh.form.domain.entity.FormElementValue">
+        update form_element_value
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="formElementId != null">form_element_id = #{formElementId},</if>
+            <if test="valueIndex != null">value_index = #{valueIndex},</if>
+            <if test="value != null and value != ''">value = #{value},</if>
+            <if test="isNumber != null">is_number = #{isNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFormElementValueById" parameterType="java.lang.Long">
+        delete from form_element_value where id = #{id}
+    </delete>
+
+    <delete id="deleteFormElementValueByIds" parameterType="java.lang.Long">
+        delete from form_element_value where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

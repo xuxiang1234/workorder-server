@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.sms.mapper.BizPushUserAliasMapper">
+
+    <resultMap type="BizPushUserAlias" id="BizPushUserAliasResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAlias" column="user_alias"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectBizPushUserAliasVo">
+        select id, user_id, user_alias, create_time, update_time, remark, del_flag from biz_push_user_alias
+    </sql>
+
+    <select id="selectBizPushUserAliasList" parameterType="BizPushUserAlias" resultMap="BizPushUserAliasResult">
+        <include refid="selectBizPushUserAliasVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="userAlias != null  and userAlias != ''">and user_alias = #{userAlias}</if>
+        </where>
+    </select>
+
+    <select id="selectBizPushUserAliasById" parameterType="Long" resultMap="BizPushUserAliasResult">
+        <include refid="selectBizPushUserAliasVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBizPushUserAlias" parameterType="BizPushUserAlias" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_push_user_alias
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userAlias != null">user_alias,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userAlias != null">#{userAlias},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBizPushUserAlias" parameterType="BizPushUserAlias">
+        update biz_push_user_alias
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userAlias != null">user_alias = #{userAlias},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizPushUserAliasById" parameterType="Long">
+        delete from biz_push_user_alias where id = #{id}
+    </delete>
+
+    <delete id="deleteBizPushUserAliasByIds" parameterType="String">
+        delete from biz_push_user_alias where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhigh.workorder.mapper.TemplateMapper">
+
+    <resultMap type="com.flyhigh.workorder.domain.entity.Template" id="templateResult">
+        <result property="id" column="id"/>
+        <result property="templateName" column="template_name"/>
+        <result property="templateType" column="template_type"/>
+        <result property="description" column="description"/>
+        <result property="picUrl" column="pic_url"/>
+        <result property="createId" column="create_id"/>
+        <result property="createName" column="create_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectTemplateVo">
+        select id, template_name, template_type, description, pic_url, create_id, create_name, create_time, update_time from template
+    </sql>
+
+    <select id="selectTemplateList" parameterType="com.flyhigh.workorder.domain.entity.Template"
+            resultMap="templateResult">
+        <include refid="selectTemplateVo"/>
+        <where>
+            <if test="templateName != null  and templateName != ''">and template_name like concat('%', #{templateName},
+                '%')
+            </if>
+            <if test="templateType != null  and templateType != ''">and template_type = #{templateType}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="picUrl != null  and picUrl != ''">and pic_url = #{picUrl}</if>
+            <if test="createId != null ">and create_id = #{createId}</if>
+            <if test="createName != null  and createName != ''">and create_name like concat('%', #{createName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTemplateById" parameterType="java.lang.Long" resultMap="templateResult">
+        <include refid="selectTemplateVo"/>
+        where id = #{id}
+    </select>
+    <select id="queryTotal" resultType="java.lang.Long">
+        select count(1) from template
+    </select>
+    <select id="selectByName" resultType="com.flyhigh.workorder.domain.entity.Template"
+            parameterType="java.lang.String">
+        <include refid="selectTemplateVo"/>
+        where template_name = #{templateName}
+    </select>
+
+    <insert id="insertTemplate" parameterType="com.flyhigh.workorder.domain.entity.Template">
+        insert into template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="templateName != null and templateName != ''">template_name,</if>
+            <if test="templateType != null and templateType != ''">template_type,</if>
+            <if test="description != null">description,</if>
+            <if test="picUrl != null">pic_url,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createName != null and createName != ''">create_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="templateName != null and templateName != ''">#{templateName},</if>
+            <if test="templateType != null and templateType != ''">#{templateType},</if>
+            <if test="description != null">#{description},</if>
+            <if test="picUrl != null">#{picUrl},</if>
+            <if test="createId != null and createId != ''">#{createId},</if>
+            <if test="createName != null and createName != ''">#{createName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTemplate" parameterType="com.flyhigh.workorder.domain.entity.Template">
+        update template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">template_name = #{templateName},</if>
+            <if test="templateType != null and templateType != ''">template_type = #{templateType},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="picUrl != null">pic_url = #{picUrl},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createName != null and createName != ''">create_name = #{createName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletetemplateById" parameterType="java.lang.Long">
+        delete from template where id = #{id}
+    </delete>
+
+    <delete id="deletetemplateByIds" parameterType="java.lang.Long">
+        delete from template where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
